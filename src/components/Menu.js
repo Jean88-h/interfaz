@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { FaBook, FaPenAlt, FaSignOutAlt, FaUser } from 'react-icons/fa';
+import { FaBook, FaPenAlt, FaSignOutAlt, FaUser, FaHome } from 'react-icons/fa';
 import '../styles/Menu.css';
 
 const Menu = ({ username }) => {
@@ -14,51 +14,109 @@ const Menu = ({ username }) => {
 
   return (
     <div className="menu-container">
-      <div className="menu-header">
-        <div className="user-info">
-          <FaUser className="user-icon" />
-          <h3 className="user-greeting">Hola, {username}</h3>
+      <div className="menu-card">
+        <div className="menu-header">
+          <div className="logo-container">
+            <div className="logo-circle">
+              <FaUser className="logo-icon" />
+            </div>
+          </div>
+          <h2 className="menu-title">Bienvenido, {username}</h2>
+          <p className="menu-subtitle">Panel de control</p>
         </div>
+        
+        <nav className="menu-nav">
+          <div className="menu-section">
+            <h3 className="section-title">Navegación</h3>
+            <ul className="menu-list">
+              <li className="menu-item">
+                <button 
+                  className="menu-button" 
+                  onClick={() => navigate('/menu')}
+                >
+                  <span className="menu-icon">
+                    <FaHome />
+                  </span>
+                  <span className="menu-label">Inicio</span>
+                </button>
+              </li>
+              <li className="menu-item">
+                <button 
+                  className="menu-button" 
+                  onClick={() => navigate('/menu/libros')}
+                >
+                  <span className="menu-icon">
+                    <FaBook />
+                  </span>
+                  <span className="menu-label">Libros</span>
+                </button>
+              </li>
+              <li className="menu-item">
+                <button 
+                  className="menu-button" 
+                  onClick={() => navigate('/menu/autores')}
+                >
+                  <span className="menu-icon">
+                    <FaPenAlt />
+                  </span>
+                  <span className="menu-label">Autores</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+          
+          <div className="menu-footer">
+            <button 
+              className="logout-button" 
+              onClick={handleLogout}
+            >
+              <span className="menu-icon">
+                <FaSignOutAlt />
+              </span>
+              <span className="menu-label">Cerrar Sesión</span>
+            </button>
+          </div>
+        </nav>
       </div>
       
-      <nav className="menu-nav">
-        <ul>
-          <li>
-            <button 
-              className="menu-item" 
-              onClick={() => navigate('/menu/libros')}
-            >
-              <span className="menu-icon">
-                <FaBook />
-              </span>
-              <span className="menu-label">Libros</span>
-            </button>
-          </li>
-          <li>
-            <button 
-              className="menu-item" 
-              onClick={() => navigate('/menu/autores')}
-            >
-              <span className="menu-icon">
-                <FaPenAlt />
-              </span>
-              <span className="menu-label">Autores</span>
-            </button>
-          </li>
-        </ul>
-        
-        <div className="logout-container">
-          <button 
-            className="menu-item logout-item" 
-            onClick={handleLogout}
-          >
-            <span className="menu-icon">
-              <FaSignOutAlt />
-            </span>
-            <span className="menu-label">Cerrar Sesión</span>
-          </button>
+      <div className="main-content">
+        <div className="content-header">
+          <h1 className="content-title">Panel de Control</h1>
+          <p className="content-description">Selecciona una opción del menú para comenzar</p>
         </div>
-      </nav>
+        
+        <div className="content-body">
+          <div className="dashboard-cards">
+            <div className="dashboard-card">
+              <div className="card-icon books-icon">
+                <FaBook />
+              </div>
+              <h3 className="card-title">Libros</h3>
+              <p className="card-description">Gestiona tu colección de libros</p>
+              <button 
+                className="card-button"
+                onClick={() => navigate('/menu/libros')}
+              >
+                Ver Libros
+              </button>
+            </div>
+            
+            <div className="dashboard-card">
+              <div className="card-icon authors-icon">
+                <FaPenAlt />
+              </div>
+              <h3 className="card-title">Autores</h3>
+              <p className="card-description">Administra la información de autores</p>
+              <button 
+                className="card-button"
+                onClick={() => navigate('/menu/autores')}
+              >
+                Ver Autores
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

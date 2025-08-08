@@ -34,8 +34,8 @@ const setupAxiosInterceptors = () => {
           localStorage.removeItem('refreshToken');
           localStorage.removeItem('username');
           
-          if (window.location.pathname !== '/login') {
-            window.location.href = '/login';
+          if (window.location.pathname !== '/') {
+            window.location.href = '/';
           }
           
           return Promise.reject(refreshError);

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { registerUser } from '../api/authApi';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { FaUser, FaLock, FaQuestionCircle, FaKey, FaUserPlus } from 'react-icons/fa';
+import { FaUser, FaLock, FaQuestionCircle, FaKey, FaUserPlus, FaPen } from 'react-icons/fa';
 import '../styles/Register.css';
 
 function Register() {
@@ -10,34 +10,87 @@ function Register() {
     username: '',
     password: '',
     securityQuestion: '',
-    securityAnswer: ''
+    securityAnswer: '',
+    customQuestion: ''
   });
+  const [showCustomQuestion, setShowCustomQuestion] = useState(false);
 
-  // Preguntas de seguridad predefinidas
   const securityQuestions = [
     "¿Cuál es el nombre de tu primera mascota?",
     "¿Cuál es tu ciudad de nacimiento?",
     "¿Cuál es el nombre de tu escuela primaria?",
     "¿Cuál es tu comida favorita?",
-    "¿Cuál es el segundo nombre de tu madre?"
+    "¿Cuál es el segundo nombre de tu madre?",
+    "Otra pregunta personalizada"
   ];
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    
+    if (name === "securityQuestion") {
+      const isCustom = value === "Otra pregunta personalizada";
+      setShowCustomQuestion(isCustom);
+      
+      if (!isCustom) {
+        setForm(prev => ({
+          ...prev,
+          securityQuestion: value,
+          customQuestion: ''
+        }));
+      } else {
+        setForm(prev => ({
+          ...prev,
+          securityQuestion: value
+        }));
+      }
+    } else {
+      setForm(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const finalQuestion = showCustomQuestion ? form.customQuestion : form.securityQuestion;
+    
+    if (!finalQuestion || finalQuestion.trim() === '') {
+      Swal.fire({
+        title: 'Campo requerido',
+        text: 'Por favor, proporciona una pregunta de seguridad',
+        icon: 'warning',
+        confirmButtonColor: '#6366f1',
+        background: '#fff',
+        color: '#2c3e50',
+        iconColor: '#f59e0b',
+        customClass: {
+          popup: 'custom-swal-popup'
+        }
+      });
+      return;
+    }
+    
     try {
-      await registerUser(form);
+      const userData = {
+        username: form.username,
+        password: form.password,
+        securityQuestion: finalQuestion,
+        securityAnswer: form.securityAnswer
+      };
+      
+      await registerUser(userData);
       Swal.fire({
         title: '¡Registro exitoso!',
         text: 'Usuario creado correctamente',
         icon: 'success',
-        confirmButtonColor: '#3498db',
+        confirmButtonColor: '#6366f1',
         timer: 2000,
         showConfirmButton: false,
         background: '#fff',
         color: '#2c3e50',
-        iconColor: '#3498db',
+        iconColor: '#6366f1',
         customClass: {
           popup: 'custom-swal-popup'
         }
@@ -47,10 +100,10 @@ function Register() {
         title: 'Error',
         text: error.response?.data || error.message,
         icon: 'error',
-        confirmButtonColor: '#3498db',
+        confirmButtonColor: '#6366f1',
         background: '#fff',
         color: '#2c3e50',
-        iconColor: '#e74c3c',
+        iconColor: '#ef4444',
         customClass: {
           popup: 'custom-swal-popup'
         }
@@ -59,96 +112,104 @@ function Register() {
   };
 
   return (
-    <div className="login-container-alt">
-      <div className="login-card-alt">
-        {/* Parte izquierda con imagen */}
-        <div className="login-image-section">
-          <div className="image-overlay">
-            <h2>Únete a nuestra comunidad</h2>
-            <p>Crea una cuenta para acceder a todos los recursos</p>
+    <div className="register-container">
+      <div className="register-card">
+        <div className="register-header">
+          <div className="logo-container">
+            <div className="logo-circle">
+              <FaUserPlus className="logo-icon" />
+            </div>
           </div>
+          <h1 className="register-title">Crear cuenta</h1>
+          <p className="register-subtitle">Únete a nuestra comunidad</p>
         </div>
         
-        {/* Parte derecha con formulario */}
-        <div className="login-form-section">
-          <div className="form-header">
-            <h3>Crear Cuenta</h3>
-          </div>
-          
-          <form onSubmit={handleSubmit} className="login-form-alt">
-            <div className="input-group-alt">
-              <label htmlFor="username">
-                <FaUser className="input-icon" /> Usuario
-              </label>
+        <form onSubmit={handleSubmit} className="register-form">
+          <div className="form-group">
+            <div className="input-wrapper">
+              <FaUser className="input-icon" />
               <input
-                id="username"
                 name="username"
                 type="text"
-                placeholder="Ingresa tu nombre de usuario"
+                placeholder="Usuario"
                 onChange={handleChange}
+                value={form.username}
                 required
               />
             </div>
-            
-            <div className="input-group-alt">
-              <label htmlFor="password">
-                <FaLock className="input-icon" /> Contraseña
-              </label>
+          </div>
+          
+          <div className="form-group">
+            <div className="input-wrapper">
+              <FaLock className="input-icon" />
               <input
-                id="password"
                 name="password"
                 type="password"
-                placeholder="Crea una contraseña segura"
+                placeholder="Contraseña"
                 onChange={handleChange}
+                value={form.password}
                 required
               />
             </div>
-            
-            <div className="input-group-alt">
-              <label htmlFor="securityQuestion">
-                <FaQuestionCircle className="input-icon" /> Pregunta de seguridad
-              </label>
+          </div>
+          
+          <div className="form-group">
+            <div className="input-wrapper">
+              <FaQuestionCircle className="input-icon" />
               <select
-                id="securityQuestion"
                 name="securityQuestion"
                 onChange={handleChange}
-                required
                 value={form.securityQuestion}
+                required
               >
-                <option value="">Selecciona una pregunta</option>
+                <option value="">Pregunta de seguridad</option>
                 {securityQuestions.map((question, index) => (
                   <option key={index} value={question}>{question}</option>
                 ))}
               </select>
             </div>
-            
-            <div className="input-group-alt">
-              <label htmlFor="securityAnswer">
-                <FaKey className="input-icon" /> Respuesta de seguridad
-              </label>
+          </div>
+          
+          {showCustomQuestion && (
+            <div className="form-group custom-question">
+              <div className="input-wrapper">
+                <FaPen className="input-icon" />
+                <input
+                  name="customQuestion"
+                  type="text"
+                  placeholder="Escribe tu pregunta personalizada"
+                  onChange={handleChange}
+                  value={form.customQuestion}
+                  required={showCustomQuestion}
+                />
+              </div>
+            </div>
+          )}
+          
+          <div className="form-group">
+            <div className="input-wrapper">
+              <FaKey className="input-icon" />
               <input
-                id="securityAnswer"
                 name="securityAnswer"
                 type="text"
-                placeholder="Ingresa tu respuesta"
+                placeholder="Respuesta de seguridad"
                 onChange={handleChange}
+                value={form.securityAnswer}
                 required
               />
             </div>
-            
-            <button type="submit" className="login-button-alt">
-              <FaUserPlus className="button-icon" />
-              Registrarse
-            </button>
-            
-            <div className="form-footer-alt">
-              <div className="register-link">
-                <span>¿Ya tienes cuenta? </span>
-                <Link to="/">Inicia sesión</Link>
-              </div>
-            </div>
-          </form>
-        </div>
+          </div>
+          
+          <button type="submit" className="register-button">
+            <FaUserPlus className="button-icon" />
+            Registrarse
+          </button>
+          
+          <div className="login-prompt">
+            <span>¿Ya tienes cuenta? </span>
+            <Link to="/" className="login-link">Inicia sesión</Link>
+          </div>
+        </form>
       </div>
     </div>
   );

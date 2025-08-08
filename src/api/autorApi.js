@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://microautores.somee.com/api/Autor';
+const API_URL = 'https://autoresmicro.somee.com/api/Autor';
 
 export const getAutores = async () => {
   const token = localStorage.getItem('token');

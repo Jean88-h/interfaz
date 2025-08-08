@@ -2,30 +2,30 @@ import React, { useState } from 'react';
 import Menu from './Menu';
 import { Outlet } from 'react-router-dom';
 import SessionTokens from './SessionTokens';
-import { FaUserCircle, FaBars, FaTimes, FaKey } from 'react-icons/fa';
+import { FaUserCircle, FaBars, FaTimes, FaKey, FaBell, FaHome } from 'react-icons/fa';
+import TokenRefresher from './TokenRefresher'; // Importar el componente
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
   const username = localStorage.getItem('username') || 'Usuario';
   const [showTokens, setShowTokens] = useState(false);
   const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
-
+  
   const toggleTokens = () => setShowTokens(prev => !prev);
   const toggleMenu = () => setIsMenuCollapsed(prev => !prev);
-
+  
   return (
     <div className="dashboard-container">
       {/* Menú lateral con nuevo diseño */}
       <div className={`sidebar ${isMenuCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
-          <div className="user-info">
-            <div className="user-avatar">
-              <FaUserCircle className="avatar-icon" />
+          <div className="logo-container">
+            <div className="logo-circle">
+              <FaHome className="logo-icon" />
             </div>
             {!isMenuCollapsed && (
-              <div className="user-details">
-                <h3 className="username">{username}</h3>
-                <span className="user-role">Administrador</span>
+              <div className="app-title">
+                <h2>Mi Biblioteca</h2>
               </div>
             )}
           </div>
@@ -49,18 +49,19 @@ const Dashboard = () => {
           </div>
         )}
       </div>
-
+      
       {/* Contenido principal */}
       <div className={`dashboard-content ${isMenuCollapsed ? 'expanded' : ''}`}>
         <div className="content-header">
           <div className="breadcrumb">
             <span>Dashboard</span>
-            <span>/</span>
-            <span>Inicio</span>
+            <span className="breadcrumb-separator">/</span>
+            <span className="breadcrumb-current">Inicio</span>
           </div>
           <div className="header-actions">
             <div className="notification-badge">
-              <span>3</span>
+              <FaBell className="notification-icon" />
+              <span className="notification-count">3</span>
             </div>
             <div className="user-badge">
               <FaUserCircle className="avatar-icon-sm" />
@@ -70,6 +71,8 @@ const Dashboard = () => {
         </div>
         
         <div className="content-container">
+          {/* Agregamos el componente TokenRefresher aquí */}
+          <TokenRefresher />
           {showTokens ? <SessionTokens /> : <Outlet />}
         </div>
       </div>

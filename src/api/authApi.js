@@ -1,7 +1,6 @@
 // authApi.js
 import axios from 'axios';
-
-const API_URL = 'https://microauth.somee.com/api/Auth';
+const API_URL = 'https://www.authmicro.somee.com/api/Auth';
 
 export const loginUser = async (credentials) => {
   const response = await axios.post(`${API_URL}/login`, credentials);
@@ -19,28 +18,10 @@ export const resetPassword = async (resetData) => {
   return await axios.post(`${API_URL}/reset-password`, resetData);
 };
 
-export const refreshToken = async () => {
-  try {
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (!refreshToken) {
-      throw new Error('No hay refresh token disponible');
-    }
-
-    const response = await axios.post(`${API_URL}/refresh-token`, { 
-      refreshToken 
-    }, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!response.data.token || !response.data.refreshToken) {
-      throw new Error('Respuesta inválida del servidor');
-    }
-
-    return response.data;
-  } catch (error) {
-    console.error('Error al refrescar token:', error);
-    throw error; // Re-lanzamos el error para manejarlo en el componente
-  }
+export const refreshToken = (data) => {
+  return axios.post(
+    'https://www.authmicro.somee.com/api/Auth/refresh-token',
+    data,
+    { headers: { 'Content-Type': 'application/json' } }
+  ).then(res => res.data);
 };
