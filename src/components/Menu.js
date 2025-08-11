@@ -79,44 +79,7 @@ const Menu = ({ username }) => {
         </nav>
       </div>
       
-      <div className="main-content">
-        <div className="content-header">
-          <h1 className="content-title">Panel de Control</h1>
-          <p className="content-description">Selecciona una opción del menú para comenzar</p>
-        </div>
-        
-        <div className="content-body">
-          <div className="dashboard-cards">
-            <div className="dashboard-card">
-              <div className="card-icon books-icon">
-                <FaBook />
-              </div>
-              <h3 className="card-title">Libros</h3>
-              <p className="card-description">Gestiona tu colección de libros</p>
-              <button 
-                className="card-button"
-                onClick={() => navigate('/menu/libros')}
-              >
-                Ver Libros
-              </button>
-            </div>
-            
-            <div className="dashboard-card">
-              <div className="card-icon authors-icon">
-                <FaPenAlt />
-              </div>
-              <h3 className="card-title">Autores</h3>
-              <p className="card-description">Administra la información de autores</p>
-              <button 
-                className="card-button"
-                onClick={() => navigate('/menu/autores')}
-              >
-                Ver Autores
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      
     </div>
   );
 };
